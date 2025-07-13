@@ -15,15 +15,25 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ Allow both localhost and Vercel frontend
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://wavybeat-frontend.vercel.app',
+];
+
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://wavybeat-frontend.vercel.app',
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
