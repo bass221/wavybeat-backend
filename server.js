@@ -7,23 +7,32 @@ const path = require('path');
 const orderRoutes = require('./routes/OrderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const beatRoutes = require('./routes/beatRoutes');
-const authRoutes = require('./routes/authRoutes'); // ✅ ADD THIS
+const authRoutes = require('./routes/authRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+// ✅ Allow both localhost and Vercel frontend
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://wavybeat-frontend.vercel.app',
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ✅ Routes
 app.use('/api/beats', beatRoutes);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/checkout', paymentRoutes); // Optional/legacy
-app.use('/api/auth', authRoutes); // ✅ REGISTER AUTH ROUTES
+app.use('/api/checkout', paymentRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/stripe', require('./routes/stripeWebhook'));
