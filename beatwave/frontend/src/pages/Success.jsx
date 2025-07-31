@@ -1,4 +1,3 @@
-// src/pages/Success.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -18,7 +17,7 @@ const Success = () => {
 
       try {
         const res = await axios.post(
-          'http://localhost:5000/api/orders',
+          `${process.env.REACT_APP_API_URL}/api/orders`,
           {
             items: cartItems,
             total: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),

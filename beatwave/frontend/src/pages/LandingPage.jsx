@@ -8,7 +8,7 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/beats');
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/beats`);
         setFeaturedBeats(res.data.slice(0, 3)); // Limit to first 3
       } catch (err) {
         console.error('❌ Failed to fetch featured beats:', err);
@@ -25,7 +25,9 @@ const LandingPage = () => {
 
       {/* Featured Beats Section */}
       <section className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-center text-pink-400 mb-8">🔥 Featured Beats</h2>
+        <h2 className="text-3xl font-bold text-center text-pink-400 mb-8">
+          🔥 Featured Beats
+        </h2>
 
         {featuredBeats.length === 0 ? (
           <p className="text-center text-gray-400">No featured beats available.</p>
@@ -38,18 +40,22 @@ const LandingPage = () => {
               >
                 {beat.imagePath && (
                   <img
-                    src={`http://localhost:5000/${beat.imagePath}`}
+                    src={`${process.env.REACT_APP_API_URL}/${beat.imagePath}`}
                     alt={beat.title}
                     className="w-full h-40 object-cover rounded-lg mb-3 border border-pink-500"
                   />
                 )}
                 <h3 className="text-lg font-semibold text-white mb-1">{beat.title}</h3>
                 <p className="text-pink-400 font-medium mb-2">${beat.price}</p>
-                <audio
-                  controls
-                  className="mt-auto bg-gray-700 rounded w-full"
-                  src={`http://localhost:5000/${beat.filePath.replace(/\\/g, '/')}`}
-                />
+
+                {/* 🎧 Styled Audio Player */}
+                <div className="mt-auto">
+                  <audio
+                    controls
+                    className="w-full mt-2 bg-black rounded-lg ring-2 ring-pink-500 focus:outline-none"
+                    src={`${process.env.REACT_APP_API_URL}/${beat.filePath.replace(/\\/g, '/')}`}
+                  />
+                </div>
               </div>
             ))}
           </div>

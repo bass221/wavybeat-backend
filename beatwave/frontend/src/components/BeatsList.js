@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCart } from '../Context/CartContext';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function BeatsList() {
   const [beats, setBeats] = useState([]);
   const [filteredBeats, setFilteredBeats] = useState([]);
@@ -17,7 +19,7 @@ function BeatsList() {
 
   const fetchBeats = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/beats');
+      const res = await axios.get(`${API_URL}/api/beats`);
       setBeats(res.data);
       setFilteredBeats(res.data);
     } catch (err) {
@@ -37,7 +39,7 @@ function BeatsList() {
 
   const handleBuyNow = async (beat) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/payment/create-checkout-session', {
+      const res = await axios.post(`${API_URL}/api/payment/create-checkout-session`, {
         items: [{ ...beat, quantity: 1 }],
       });
       window.location.href = res.data.url;
@@ -52,7 +54,7 @@ function BeatsList() {
     const token = localStorage.getItem('token');
 
     try {
-      await axios.delete(`http://localhost:5000/api/beats/${id}`, {
+      await axios.delete(`${API_URL}/api/beats/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +100,7 @@ function BeatsList() {
             <div key={beat._id} className="bg-gray-900 rounded-xl shadow-lg overflow-hidden flex flex-col">
               {beat.imagePath && (
                 <img
-                  src={`http://localhost:5000/${beat.imagePath}`}
+                  src={`${API_URL}/${beat.imagePath}`}
                   alt={beat.title}
                   className="w-full h-48 object-cover"
                 />
@@ -112,7 +114,7 @@ function BeatsList() {
                 {beat.filePath ? (
                   <audio
                     controls
-                    src={`http://localhost:5000/${beat.filePath.replace(/\\/g, '/')}`}
+                    src={`${API_URL}/${beat.filePath.replace(/\\/g, '/')}`}
                     className="w-full rounded-lg border-2 border-pink-500"
                   />
                 ) : (

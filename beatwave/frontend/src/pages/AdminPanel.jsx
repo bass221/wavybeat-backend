@@ -1,4 +1,3 @@
-// AdminPanel.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -13,7 +12,7 @@ const AdminPanel = () => {
 
   const fetchBeats = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/beats');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/beats`);
       setBeats(res.data);
     } catch (err) {
       console.error('Error fetching beats:', err);
@@ -25,22 +24,21 @@ const AdminPanel = () => {
   }, []);
 
   const handleDelete = async (beatId) => {
-    const token = localStorage.getItem('token'); // ✅ Get token from localStorage
+    const token = localStorage.getItem('token');
 
     try {
-      await axios.delete(`http://localhost:5000/api/beats/${beatId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/beats/${beatId}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Set token in Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
       alert('✅ Beat deleted successfully');
-      fetchBeats(); // refresh list after delete
+      fetchBeats();
     } catch (err) {
       console.error('❌ Error deleting beat:', err);
       alert('❌ Failed to delete beat');
-  }
-};
-
+    }
+  };
 
   const openEditModal = (beat) => {
     setSelectedBeat(beat);
@@ -56,7 +54,7 @@ const AdminPanel = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/beats/${selectedBeat._id}`, editForm, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/beats/${selectedBeat._id}`, editForm, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessage('✅ Beat updated');

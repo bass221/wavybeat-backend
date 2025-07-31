@@ -1,4 +1,3 @@
-// src/pages/OrderHistory.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -19,7 +18,7 @@ const OrderHistory = () => {
     }
 
     try {
-      const res = await axios.get('http://localhost:5000/api/orders', {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -53,8 +52,6 @@ const OrderHistory = () => {
             {orders.map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
-
-                {/* ✅ Use <ul> inside <td> to prevent invalid nesting */}
                 <td>
                   <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
                     {order.beats.map((b, i) => (
@@ -62,7 +59,6 @@ const OrderHistory = () => {
                     ))}
                   </ul>
                 </td>
-
                 <td>${order.total}</td>
                 <td>{new Date(order.createdAt).toLocaleString()}</td>
                 <td>

@@ -14,10 +14,9 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, form);
       const { token, user } = res.data;
 
-      // ✅ Store token with fallback for API auth
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -25,7 +24,6 @@ const Login = () => {
 
       setMessage(`✅ Welcome back, ${user.username}!`);
 
-      // Redirect
       if (user.isAdmin) {
         navigate('/admin');
       } else {
@@ -52,7 +50,6 @@ const Login = () => {
             required
             className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
-
           <input
             type="password"
             name="password"
@@ -62,13 +59,11 @@ const Login = () => {
             required
             className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
-
           <div className="text-right">
             <a href="/forgot-password" className="text-sm text-pink-400 hover:underline">
               Forgot Password?
             </a>
           </div>
-
           <button
             type="submit"
             className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-md transition duration-200"

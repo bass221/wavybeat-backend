@@ -1,5 +1,3 @@
-
-//Cart.jsx
 import React from 'react';
 import { useCart } from '../Context/CartContext';
 import axios from 'axios';
@@ -11,7 +9,7 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/payment/create-checkout-session', {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/payment/create-checkout-session`, {
         items: cartItems,
       });
       window.location.href = res.data.url; // ✅ Redirect to Stripe
@@ -33,7 +31,7 @@ const Cart = () => {
             {cartItems.map((item, idx) => (
               <div key={idx} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col">
                 <img
-                  src={`http://localhost:5000/${item.imagePath}`}
+                  src={`${process.env.REACT_APP_API_URL}/${item.imagePath}`}
                   alt={item.title}
                   className="border-4 border-red-500 w-full h-52 object-cover rounded-t-xl"
                 />
@@ -90,4 +88,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

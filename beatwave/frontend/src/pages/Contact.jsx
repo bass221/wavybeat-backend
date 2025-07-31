@@ -19,7 +19,7 @@ const Contact = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/email/send', form);
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/email/send`, form);
       toast.success(res.data.message || 'Message sent!');
       setForm({ name: '', email: '', message: '' });
     } catch (err) {

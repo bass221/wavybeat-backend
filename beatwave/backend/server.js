@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,27 +6,46 @@ const path = require('path');
 const orderRoutes = require('./routes/OrderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const beatRoutes = require('./routes/beatRoutes');
-const authRoutes = require('./routes/authRoutes'); // ✅ ADD THIS
+const authRoutes = require('./routes/authRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+// ✅ Allow localhost, production, and Vercel preview domains
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://wavybeat-frontend.vercel.app',
+  'https://wavybeat-frontend-qd38g1e50-bassirous-projects-7878e59b.vercel.app' // Add your preview domain
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g., curl, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ✅ Routes
 app.use('/api/beats', beatRoutes);
 app.use('/api/payment', paymentRoutes);
-app.use('/api/checkout', paymentRoutes); // Optional/legacy
-app.use('/api/auth', authRoutes); // ✅ REGISTER AUTH ROUTES
+app.use('/api/checkout', paymentRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/stripe', require('./routes/stripeWebhook'));
-app.use('/api/webhook', require('./routes/webHook')); // no auth middleware here!
+app.use('/api/webhook', require('./routes/webHook')); // No auth middleware here
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)

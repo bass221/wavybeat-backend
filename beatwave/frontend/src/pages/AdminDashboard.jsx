@@ -17,7 +17,7 @@ const AdminDashboard = () => {
 
   const fetchBeats = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/beats');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/beats`);
       setBeats(res.data);
     } catch (err) {
       console.error('❌ Error fetching beats:', err);
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this beat?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/beats/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/beats/${id}`);
       setBeats((prev) => prev.filter((beat) => beat._id !== id));
     } catch (err) {
       console.error('❌ Error deleting beat:', err);
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
               <td>
                 {beat.imagePath ? (
                   <img
-                    src={`http://localhost:5000/${beat.imagePath.replace(/\\/g, '/')}`}
+                    src={`${process.env.REACT_APP_API_URL}/${beat.imagePath.replace(/\\/g, '/')}`}
                     alt="Beat Cover"
                     width="100"
                   />
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
                 {beat.filePath ? (
                   <audio
                     controls
-                    src={`http://localhost:5000/${beat.filePath.replace(/\\/g, '/')}`}
+                    src={`${process.env.REACT_APP_API_URL}/${beat.filePath.replace(/\\/g, '/')}`}
                   />
                 ) : (
                   <p style={{ color: 'red' }}>❌ No audio file</p>

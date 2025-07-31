@@ -1,4 +1,3 @@
-// src/pages/UploadBeat.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -16,7 +15,7 @@ const UploadBeat = () => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      setMessage('You must be logged in to upload.');
+      setMessage('❌ You must be logged in to upload.');
       return;
     }
 
@@ -29,7 +28,7 @@ const UploadBeat = () => {
     if (zipFile) formData.append('zip', zipFile);
 
     try {
-      await axios.post('http://localhost:5000/api/beats/upload', formData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/beats/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -53,11 +52,13 @@ const UploadBeat = () => {
     <div className="min-h-screen bg-black text-white py-10 px-4">
       <div className="max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold text-pink-500 mb-6 text-center">⬆️ Upload New Beat</h2>
+
         {message && (
           <p className="mb-4 text-center text-sm text-yellow-400">{message}</p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Title */}
           <input
             type="text"
             placeholder="Title"
@@ -67,6 +68,7 @@ const UploadBeat = () => {
             required
           />
 
+          {/* Genre */}
           <select
             value={genre}
             onChange={(e) => setGenre(e.target.value)}
@@ -80,6 +82,7 @@ const UploadBeat = () => {
             <option value="UK Drill">UK Drill</option>
           </select>
 
+          {/* Price */}
           <input
             type="number"
             placeholder="Price"
@@ -89,17 +92,28 @@ const UploadBeat = () => {
             required
           />
 
+          {/* Audio File */}
           <label className="block text-sm font-medium text-gray-300">
             🎵 Upload Audio File (MP3)
           </label>
           <input
             type="file"
-            accept="audio/*"
-            onChange={(e) => setAudioFile(e.target.files[0])}
+            accept=".mp3,audio/mpeg,audio/wav"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file && file.type.startsWith('audio/')) {
+                setAudioFile(file);
+              } else {
+                alert('Please select a valid audio file (MP3 or WAV).');
+                e.target.value = ''; // reset invalid file
+              }
+            }}
             className="w-full text-white"
             required
           />
 
+
+          {/* Image File */}
           <label className="block text-sm font-medium text-gray-300">
             🖼️ Upload Image (optional)
           </label>
@@ -107,9 +121,10 @@ const UploadBeat = () => {
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
-            className="w-full text-white"
+            className="w-full text-white file:cursor-pointer"
           />
 
+          {/* ZIP File */}
           <label className="block text-sm font-medium text-gray-300">
             📦 Upload ZIP of Beat Stems (optional)
           </label>
@@ -117,12 +132,13 @@ const UploadBeat = () => {
             type="file"
             accept=".zip,.rar,.7z"
             onChange={(e) => setZipFile(e.target.files[0])}
-            className="w-full text-white"
+            className="w-full text-white file:cursor-pointer"
           />
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg"
+            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg w-full"
           >
             ⬆️ Upload Beat
           </button>
