@@ -44,7 +44,6 @@ app.use('/api/checkout', paymentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/email', emailRoutes);
-app.use('/api/stripe', require('./routes/stripeWebhook'));
 app.use('/api/webhook', require('./routes/webHook')); // No auth middleware here
 
 // MongoDB connection
